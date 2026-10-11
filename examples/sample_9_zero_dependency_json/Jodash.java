@@ -10,7 +10,7 @@ import java.util.Map;
  * Jodash Implementation
  *
  * Solution: Jodash provides built-in toJson and toPrettyJson methods
- * requiring 0 external dependencies (no Jackson, no Gson, lightweight ~37KB verified JAR footprint).
+ * requiring 0 external dependencies (no Jackson, no Gson, lightweight ~37KB JAR for v0.1.0).
  * Works directly on Maps, Records, Lists, Sets, Arrays, and Primitives.
  */
 public class Jodash {

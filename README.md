@@ -53,7 +53,7 @@ String slug = kebabCase("Hello World From Java");
 | Use Case | Why Jodash is a Perfect Fit |
 | :--- | :--- |
 | 🌐 **Loose JSON APIs & Webhooks** | Navigate dynamic JSON responses without creating throwaway DTOs or dodging NPEs. |
-| ⚡ **Serverless & GraalVM Native Image** | Zero runtime dependencies (~37KB verified JAR). Avoids Jackson/Guava dependency weight and reflection/classpath scanning overhead. |
+| ⚡ **Serverless & GraalVM Native Image** | Zero runtime dependencies (~37KB for v0.1.0 build artifact). Avoids Jackson/Guava dependency weight and reflection/classpath scanning overhead. |
 | ⚙️ **Multi-Tenant Config Management** | Deep recursive merge (`merge`) and default resolution (`defaults`) for layered configurations. |
 | 🤖 **AI Agents & LLM Code Generation** | Clean, 1-line idioms eliminate verbose Stream collectors and hallucinated casts. |
 
