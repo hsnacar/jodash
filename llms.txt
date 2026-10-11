@@ -67,7 +67,12 @@ import static io.github.jodash.Jo.*;
 - `asList(val)` : Returns List<Object>, wraps array/single element.
 - `asMap(val)` : Returns Map<String, Object> safely.
 
-### 6. Control Flow
+### 6. Zero-Dependency JSON Serialization
+- `toJson(val)` : Compact JSON string for Maps, Records, POJOs, Lists, Sets, Arrays, Primitives. Zero external dependencies.
+- `toPrettyJson(val)` : Pretty-printed 2-space indented JSON string.
+- `obj().set("k", v).toJson()` : Fluent dynamic object serialization.
+
+### 7. Control Flow
 - `memoize(supplier)` / `memoize(function)` : Thread-safe and null-safe caching (supports null inputs and outputs).
 - `once(runnable)` / `once(supplier)` : Single-execution guard.
 - `retry(attempts, duration, callable)` : Resilient task execution.

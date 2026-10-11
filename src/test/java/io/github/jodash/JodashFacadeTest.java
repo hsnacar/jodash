@@ -101,5 +101,9 @@ class JodashFacadeTest {
         assertThat(Jodash.asString(123, "")).isEqualTo("123");
         assertThat(Jodash.asList("item")).containsExactly("item");
         assertThat(Jodash.asMap(Map.of("k", "v"))).containsEntry("k", "v");
+
+        // JSON serialization
+        assertThat(Jodash.toJson(Map.of("a", 1))).isEqualTo("{\"a\":1}");
+        assertThat(Jodash.toPrettyJson(Map.of("a", 1))).contains("  \"a\": 1");
     }
 }

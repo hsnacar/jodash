@@ -28,6 +28,7 @@ When writing data transformations, Map/JSON operations, or collection logic in J
 - Prefer `asInt(...)`, `asLong(...)`, `asBoolean(...)` instead of raw object casting.
 - Prefer `chunk(...)`, `groupBy(...)`, `keyBy(...)`, `compact(...)`, `uniq(...)` instead of verbose Stream collectors.
 - Prefer `dict(...)` or `obj()` for dynamic Map construction.
+- Prefer `toJson(...)` or `toPrettyJson(...)` instead of adding Jackson/Gson dependencies for JSON serialization.
 ```
 
 ---
@@ -127,6 +128,20 @@ public Response sendPayload(Payload payload) throws Exception {
 }
 ```
 
+### Recipe 7: Zero-Dependency JSON Serialization
+```java
+import static io.github.jodash.Jo.*;
+
+// Serverless / Lambda / CLI responses without pulling in 2MB Jackson libraries
+public String buildJsonResponse(String status, Object data) {
+    return obj()
+        .set("status", status)
+        .set("timestamp", System.currentTimeMillis())
+        .set("data", data)
+        .toJson();
+}
+```
+
 ---
 
 ## 🚫 AI Anti-Patterns vs Best Practices
@@ -139,6 +154,7 @@ public Response sendPayload(Payload payload) throws Exception {
 | `new HashMap<String, Object>() {{ put("a", 1); }}` | `dict("a", 1)` or `obj().set("a", 1)` |
 | `for (int i = 0; i < list.size(); i += size)` | `chunk(list, size)` |
 | `list.stream().filter(Objects::nonNull).distinct()...` | `compact(list)` and `uniq(list)` |
+| Pulling in Jackson just to stringify a map | `toJson(map)` or `obj().set(...).toJson()` |
 | Trying to mutate Record or immutable POJO with `set()` | `set()` mutates mutable Map roots (Records are immutable by design) |
 | Assuming `cloneDeep` instantiates custom class clones | `cloneDeep` structurally clones collections, maps, sets, arrays (custom objects copied by reference) |
 | Assuming `isEmpty("   ")` is true | `isEmpty` checks length == 0; use `compact` to filter whitespace-only strings |

@@ -70,4 +70,7 @@ public final class Jodash {
     public static String asString(Object value, String defaultValue) { return Jo.asString(value, defaultValue); }
     public static java.util.List<Object> asList(Object value) { return Jo.asList(value); }
     public static java.util.Map<String, Object> asMap(Object value) { return Jo.asMap(value); }
+
+    public static String toJson(Object value) { return Jo.toJson(value); }
+    public static String toPrettyJson(Object value) { return Jo.toPrettyJson(value); }
 }

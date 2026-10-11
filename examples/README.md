@@ -16,19 +16,26 @@ Each sample directory contains:
 | **[`sample_2_batching_chunking`](./sample_2_batching_chunking/)** | Pagination & Batch Chunking | `Jo.chunk` vs `subList` indexing loops |
 | **[`sample_3_grouping_indexing`](./sample_3_grouping_indexing/)** | Grouping, Indexing & Counting | `Jo.groupBy`, `Jo.keyBy`, `Jo.countBy` vs `Collectors.groupingBy / toMap` |
 | **[`sample_4_cleaning_deduplication`](./sample_4_cleaning_deduplication/)** | Input Sanitization & Deduplication | `Jo.compact`, `Jo.uniq`, `Jo.partition` vs manual Set/List filtering |
-| **[`sample_5_deep_merge_defaults`](./sample_5_deep_merge_defaults/)** | Config Merging, Defaults, Pick & Omit | `Jo.merge`, `Jo.defaults`, `Jo.pick` vs 25-line recursive method |
+| **[`sample_5_deep_merge_defaults`](./sample_5_deep_merge_defaults/)** | Deep Config Merging & Pick | `Jo.merge`, `Jo.pick` vs recursive merge and manual filtering |
 | **[`sample_6_safe_type_coercion`](./sample_6_safe_type_coercion/)** | Safe Dynamic Type Parsing | `Jo.asInt`, `Jo.asBoolean`, `Jo.asDouble` vs try-catch / instanceof |
 | **[`sample_7_string_transformations`](./sample_7_string_transformations/)** | String Casing & Slugs | `Jo.kebabCase`, `Jo.camelCase`, `Jo.truncate` vs Regex / StringBuilder |
 | **[`sample_8_resilient_control_flow`](./sample_8_resilient_control_flow/)** | Resilient Retry & Lazy Caching | `Jo.retry`, `Jo.memoize` vs retry loops & ConcurrentHashMap |
+| **[`sample_9_zero_dependency_json`](./sample_9_zero_dependency_json/)** | Zero-Dependency JSON Serialization | `Jo.toJson`, `Jo.toPrettyJson`, `obj().toJson()` vs manual stringifier / Jackson |
 
 ---
 
 ## 🚀 Running Any Sample
 
-You can compile and run any sample using standard `java` with the jodash jar or classes:
+From the repository root, compile the library and both sides of a sample:
 
 ```bash
-# Example running sample 1:
-javac -cp build/classes/java/main examples/sample_1_object_path/Jodash.java
-java -cp build/classes/java/main:examples/sample_1_object_path sample_1_object_path.Jodash
+./gradlew classes
+mkdir -p build/examples
+javac -cp build/classes/java/main -d build/examples examples/sample_1_object_path/*.java
+
+# Run either side of the comparison:
+java -cp build/classes/java/main:build/examples sample_1_object_path.StandardJava
+java -cp build/classes/java/main:build/examples sample_1_object_path.Jodash
 ```
+
+Replace `sample_1_object_path` with another sample package to run a different comparison. On Windows, use `;` instead of `:` in the Java classpath.

@@ -526,4 +526,22 @@ public final class Jo {
     public static <T> T retry(int attempts, Duration delay, Callable<T> task) throws Exception {
         return Functions.retry(attempts, delay, task);
     }
+
+    // ==========================================
+    // ZERO-DEPENDENCY JSON SERIALIZATION
+    // ==========================================
+
+    /**
+     * Serializes any Map, Collection, Array, Record, or Object to a compact JSON string without Jackson or Gson.
+     */
+    public static String toJson(Object value) {
+        return Json.stringify(value);
+    }
+
+    /**
+     * Serializes any Map, Collection, Array, Record, or Object to a pretty-printed JSON string without external dependencies.
+     */
+    public static String toPrettyJson(Object value) {
+        return Json.pretty(value);
+    }
 }

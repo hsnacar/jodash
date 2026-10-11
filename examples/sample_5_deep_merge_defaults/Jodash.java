@@ -4,7 +4,7 @@ import static io.github.jodash.Jo.*;
 import java.util.Map;
 
 /**
- * SAMPLE 5: Deep Configuration Merging, Defaults, Pick & Omit
+ * SAMPLE 5: Deep Configuration Merging & Pick
  * Jodash Implementation
  */
 public class Jodash {

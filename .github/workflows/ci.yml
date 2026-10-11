@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build & Verify (Java ${{ matrix.java-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 17, 21 ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build and Run Tests with JaCoCo Verification
+        run: ./gradlew check --no-daemon
+
+      - name: Verify Comparison Examples
+        run: |
+          ./gradlew classes --no-daemon
+          mkdir -p build/examples
+          for dir in examples/sample_*; do
+            echo "Compiling $dir..."
+            javac -cp build/classes/java/main -d build/examples $dir/*.java
+          done

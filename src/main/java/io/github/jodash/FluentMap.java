@@ -95,6 +95,20 @@ public class FluentMap {
         return this.data;
     }
 
+    /**
+     * Serializes this object to a compact JSON string without external dependencies.
+     */
+    public String toJson() {
+        return io.github.jodash.core.Json.stringify(this.data);
+    }
+
+    /**
+     * Serializes this object to a formatted (pretty-printed) JSON string.
+     */
+    public String toPrettyJson() {
+        return io.github.jodash.core.Json.pretty(this.data);
+    }
+
     @Override
     public String toString() {
         return this.data.toString();

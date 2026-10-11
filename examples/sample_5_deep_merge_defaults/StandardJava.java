@@ -3,7 +3,7 @@ package sample_5_deep_merge_defaults;
 import java.util.*;
 
 /**
- * SAMPLE 5: Deep Configuration Merging, Defaults, Pick & Omit
+ * SAMPLE 5: Deep Configuration Merging & Pick
  * Standard Java (Vanilla) Implementation
  */
 public class StandardJava {

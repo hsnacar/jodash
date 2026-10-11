@@ -1,7 +1,7 @@
 # ⚡ Jodash (`jo`)
 
-> **The pragmatic, Lodash-inspired utility toolkit for modern Java (17+).**  
-> *Zero external dependencies. Dynamic object ergonomics. Safe path navigation.*
+> **The zero-dependency Dynamic Object, Map & Configuration toolkit for Modern Java (17+).**  
+> *Safe nested path access, painless Map/JSON manipulation, deep merging, and pragmatic utilities without runtime bloat.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Java: 17+](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://openjdk.org/)
@@ -11,38 +11,51 @@
 
 ---
 
-## 🎯 Why Jodash?
+## 🎯 The Problem Jodash Solves
 
-Coming from **JavaScript/TypeScript**, **Go** (`samber/lo`), or **Python**, writing simple data manipulation in Java often feels unnecessarily verbose:
+In statically-typed Java, dealing with **loosely-typed, dynamic data** (e.g., webhook payloads, external API responses, runtime configs, MongoDB documents) is notoriously clunky:
 
-- Accessing nested maps/JSON paths (`user.address.city`) requires nested null-checks, casting, or fragile chains.
-- Java Streams are powerful, but writing `Collectors.groupingBy(...)` or `Collectors.mapping(...)` for simple tasks is exhausting.
-- Java doesn't have native object/dict literals or safe deep merging.
+- ❌ **Deep Path Access:** Extracting `payload.get("user").get("address").get("city")` turns into a 10-line minefield of null checks, casts, and potential `ClassCastException`s.
+- ❌ **No Object/Dict Literals:** `Map.of()` is immutable, capped at 10 entries, and awkward for nested graphs.
+- ❌ **Heavy Runtime Dependencies:** Pulling in Jackson or Guava just to merge two JSON configs or stringify a map adds megabytes to AWS Lambda cold starts.
+- ❌ **Fragile Type Conversions:** Raw casts like `(Integer) map.get("id")` crash when the underlying deserializer produced a `Long` or `String`.
 
-**Jodash brings JavaScript / Lodash ergonomics to modern Java (Java 17, 21, 25+):**
+**Jodash gives you dynamic JavaScript/Lodash ergonomics with 100% zero external dependencies:**
 
 ```java
 import static io.github.jodash.Jo.*;
 
-// 1. Create dynamic objects effortlessly
+// 1. Build dynamic Map/Object graphs effortlessly
 var user = dict(
     "name", "Hasan",
     "address", dict("city", "Istanbul", "zip", "34000"),
     "tags", list("java", "go", "react")
 );
 
-// 2. Safe deep navigation (supports Maps, Records, POJOs, Lists, and Arrays)
+// 2. Safe deep path navigation (Map, Record, POJO, List, Array)
 String city = get(user, "address.city", "Unknown"); // "Istanbul"
 int zip = asInt(get(user, "address.zip"), 0);        // 34000
 
-// 3. Ergonomic collections in 1 line
-List<List<Integer>> pages = chunk(list(1, 2, 3, 4, 5), 2); // [[1, 2], [3, 4], [5]]
-Map<Role, List<User>> byRole = groupBy(users, User::role);
-List<String> clean = compact(list("java", null, "", "go")); // ["java", "go"]
+// 3. Zero-dependency JSON stringify (no Jackson/Gson required!)
+String json = toJson(user); 
+// {"name":"Hasan","address":{"city":"Istanbul","zip":"34000"},"tags":["java","go","react"]}
 
-// 4. Case conversions & string helpers
-String slug = kebabCase("Hello World From Java"); // "hello-world-from-java"
+// 4. Ergonomic helpers that eliminate Stream boilerplate
+List<List<Integer>> pages = chunk(list(1, 2, 3, 4, 5), 2);
+Map<Role, List<User>> byRole = groupBy(users, User::role);
+String slug = kebabCase("Hello World From Java");
 ```
+
+---
+
+## 🌟 Where Jodash Shines (Primary Use Cases)
+
+| Use Case | Why Jodash is a Perfect Fit |
+| :--- | :--- |
+| 🌐 **Loose JSON APIs & Webhooks** | Navigate dynamic JSON responses without creating throwaway DTOs or dodging NPEs. |
+| ⚡ **Serverless & GraalVM Native Image** | Zero runtime dependencies. Instant cold starts with tiny JAR footprints (no Jackson or Guava). |
+| ⚙️ **Multi-Tenant Config Management** | Deep recursive merge (`merge`) and default resolution (`defaults`) for layered configurations. |
+| 🤖 **AI Agents & LLM Code Generation** | Clean, 1-line idioms eliminate verbose Stream collectors and hallucinated casts. |
 
 ---
 
@@ -257,7 +270,28 @@ isEmpty("hello");       // false
 
 ---
 
-### 3. 📚 Collections & Arrays
+### 3. 📦 Zero-Dependency JSON Serialization
+
+In lightweight microservices, AWS Lambda, CLI tools, or GraalVM Native Images, pulling in `jackson-databind` (~2MB of dependencies) just to stringify a dynamic map or response payload is unnecessary overhead. Jodash provides built-in JSON serialization with 100% zero external dependencies:
+
+```java
+// Compact JSON string (works on Maps, Records, Lists, Sets, Arrays, Enums, Primitives)
+String json = toJson(userMap);
+// {"name":"Hasan","roles":["admin","dev"],"active":true}
+
+// Formatted / Pretty-printed JSON for logging or CLI output
+String pretty = toPrettyJson(userMap);
+
+// Direct from FluentMap
+String apiResponse = obj()
+    .set("status", "OK")
+    .set("data.user.id", 101)
+    .toJson();
+```
+
+---
+
+### 4. 📚 Collections & Arrays
 
 #### `chunk(list, size)`
 ```java
