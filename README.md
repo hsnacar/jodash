@@ -7,7 +7,7 @@
 [![Java: 17+](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://openjdk.org/)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-brightgreen.svg)]()
 [![Coverage: 95%](https://img.shields.io/badge/Coverage-95%25-brightgreen.svg)]()
-[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)]()
+[![Build](https://github.com/hasanacar/jodash/actions/workflows/ci.yml/badge.svg)](https://github.com/hasanacar/jodash/actions/workflows/ci.yml)
 
 ---
 
@@ -61,7 +61,7 @@ String slug = kebabCase("Hello World From Java");
 
 ## ⚔️ Standard Java vs Jodash (Head-to-Head)
 
-> 💡 **Runnable Comparison Samples:** Check the [`examples/`](file:///Users/hasanacar/Documents/Projects/open-source-projects/jodash/examples) directory for 9 dedicated side-by-side runnable sample folders (`sample_1_object_path` through `sample_9_zero_dependency_json`) showing complete runnable Java comparisons.
+> 💡 **Runnable Comparison Samples:** Check the [`examples/`](./examples/) directory for 9 dedicated side-by-side runnable sample folders (`sample_1_object_path` through `sample_9_zero_dependency_json`) showing complete runnable Java comparisons.
 
 | Task | Standard Java (Vanilla / Streams) | With Jodash (`jo`) | Lines Saved |
 | :--- | :--- | :--- | :--- |
@@ -166,8 +166,8 @@ Map<String, Object> finalConfig = merge(defaultConfig, userConfig, envOverrides)
 
 Jodash comes with specialized documentation designed for AI coding agents (Cursor, Copilot, Windsurf, Claude Code, Antigravity):
 
-- **[AGENT_GUIDE.md](file:///Users/hasanacar/Documents/Projects/open-source-projects/jodash/AGENT_GUIDE.md)**: AI-optimized cheatsheet, anti-patterns, and zero-boilerplate recipes.
-- **[llms.txt](file:///Users/hasanacar/Documents/Projects/open-source-projects/jodash/llms.txt)**: Fast machine-readable API manifest conforming to the [llmstxt.org](https://llmstxt.org/) standard.
+- **[AGENT_GUIDE.md](./AGENT_GUIDE.md)**: AI-optimized cheatsheet, anti-patterns, and zero-boilerplate recipes.
+- **[llms.txt](./llms.txt)**: Fast machine-readable API manifest conforming to the [llmstxt.org](https://llmstxt.org/) standard.
 
 ---
 

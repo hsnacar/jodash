@@ -195,7 +195,7 @@ public final class Strings {
     }
 
     /**
-     * Escapes HTML characters: &, <, >, ", '
+     * Escapes HTML characters: {@code &amp;}, {@code <}, {@code >}, {@code "}, and {@code '}.
      */
     public static String escape(String string) {
         if (string == null) return "";

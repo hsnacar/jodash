@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Fluent wrapper around a Map<String, Object> with dot-path navigation support.
+ * Fluent wrapper around a {@code Map<String, Object>} with dot-path navigation support.
  * Similar to dynamic JavaScript object handling.
  */
 public class FluentMap {

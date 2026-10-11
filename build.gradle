@@ -74,6 +74,11 @@ publishing {
                         name = 'Hasan Acar'
                     }
                 }
+                scm {
+                    connection = 'scm:git:git://github.com/hasanacar/jodash.git'
+                    developerConnection = 'scm:git:ssh://github.com/hasanacar/jodash.git'
+                    url = 'https://github.com/hasanacar/jodash'
+                }
             }
         }
     }

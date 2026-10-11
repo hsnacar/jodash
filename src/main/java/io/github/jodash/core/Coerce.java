@@ -102,7 +102,7 @@ public final class Coerce {
     }
 
     /**
-     * Safely casts value to Map<String, Object> or returns an empty LinkedHashMap.
+     * Safely casts value to {@code Map<String, Object>} or returns an empty LinkedHashMap.
      */
     @SuppressWarnings("unchecked")
     public static Map<String, Object> asMap(Object value) {

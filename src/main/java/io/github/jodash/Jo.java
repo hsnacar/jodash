@@ -482,7 +482,7 @@ public final class Jo {
     }
 
     /**
-     * Safely casts to Map<String, Object> or empty Map.
+     * Safely casts to {@code Map<String, Object>} or empty Map.
      */
     public static Map<String, Object> asMap(Object value) {
         return Coerce.asMap(value);
