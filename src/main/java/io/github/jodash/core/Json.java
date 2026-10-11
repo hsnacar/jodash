@@ -14,7 +14,7 @@ import java.util.*;
  *   <li>{@link Collection} and Arrays: JSON Arrays</li>
  *   <li>Java {@link Record}: JSON Objects (reflectively reads record components)</li>
  *   <li>{@link CharSequence}: Escaped JSON Strings</li>
- *   <li>{@link Number}: Valid finite numbers (NaN and Infinities are serialized as {@code null})</li>
+ *   <li>{@link Number}: Standard numbers (Integer, Long, Double, Float, BigDecimal, BigInteger) are serialized as JSON numbers; non-finite numbers (NaN, Infinities) are serialized as {@code null}; custom {@link Number} instances whose {@code toString()} does not match RFC 8259 number syntax are safely quoted as JSON strings rather than corrupting syntax.</li>
  *   <li>{@link Boolean}: {@code true} / {@code false}</li>
  *   <li>{@link Enum}: String representation of enum name</li>
  *   <li>{@link Optional}: Value if present, {@code null} if empty</li>

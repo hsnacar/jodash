@@ -290,7 +290,7 @@ String apiResponse = obj()
 ```
 
 > **Design & Safety Notes:**
-> - **Numeric Safety:** Standard numbers (`Integer`, `Long`, `Double`, `Float`, `BigDecimal`, `BigInteger`) are formatted cleanly. Non-finite numbers (`NaN`, `Infinity`, `-Infinity`) are safely emitted as `null`. Custom `Number` subclasses with non-standard string formats are safely quoted as strings to prevent corrupting JSON syntax.
+> - **Numeric Contract:** Standard numbers (`Integer`, `Long`, `Double`, `Float`, `BigDecimal`, `BigInteger`) are formatted as JSON numbers. Non-finite numbers (`NaN`, `Infinity`, `-Infinity`) are safely emitted as `null`. Custom `Number` subclasses whose `toString()` does not conform to RFC 8259 number syntax are safely quoted as JSON strings rather than corrupting JSON document syntax.
 > - **Cycle Protection:** Detects circular references and throws `IllegalArgumentException` instead of overflowing the stack.
 > - **Scope:** Specially optimized for dynamic `Map` structures and Java `Record`s. Arbitrary custom objects fall back to their string representation. For advanced polymorphic bean binding or custom annotations, continue using Jackson.
 
