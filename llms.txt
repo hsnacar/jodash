@@ -68,7 +68,7 @@ import static io.github.jodash.Jo.*;
 - `asMap(val)` : Returns Map<String, Object> safely.
 
 ### 6. Zero-Dependency JSON Serialization
-- `toJson(val)` : Compact JSON string for Maps, Records, POJOs, Lists, Sets, Arrays, Primitives. Zero external dependencies.
+- `toJson(val)` : Compact RFC 8259 JSON string for Maps, Records, Lists, Sets, Arrays, Primitives. Zero external dependencies.
 - `toPrettyJson(val)` : Pretty-printed 2-space indented JSON string.
 - `obj().set("k", v).toJson()` : Fluent dynamic object serialization.
 

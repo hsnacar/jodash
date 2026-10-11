@@ -532,14 +532,20 @@ public final class Jo {
     // ==========================================
 
     /**
-     * Serializes any Map, Collection, Array, Record, or Object to a compact JSON string without Jackson or Gson.
+     * Serializes Maps, Collections, Arrays, Java Records, and Primitives to a compact RFC 8259-compliant JSON string without external dependencies.
+     * Custom objects fall back to their string representation.
+     *
+     * @throws IllegalArgumentException if a circular reference is detected
      */
     public static String toJson(Object value) {
         return Json.stringify(value);
     }
 
     /**
-     * Serializes any Map, Collection, Array, Record, or Object to a pretty-printed JSON string without external dependencies.
+     * Serializes Maps, Collections, Arrays, Java Records, and Primitives to a pretty-printed JSON string without external dependencies.
+     * Custom objects fall back to their string representation.
+     *
+     * @throws IllegalArgumentException if a circular reference is detected
      */
     public static String toPrettyJson(Object value) {
         return Json.pretty(value);

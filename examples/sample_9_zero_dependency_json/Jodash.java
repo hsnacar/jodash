@@ -10,8 +10,8 @@ import java.util.Map;
  * Jodash Implementation
  *
  * Solution: Jodash provides built-in toJson and toPrettyJson methods
- * requiring 0 external dependencies (no Jackson, no Gson, zero cold-start delay).
- * Works directly on Maps, Records, POJOs, Lists, Sets, Arrays, and Primitives.
+ * requiring 0 external dependencies (no Jackson, no Gson, lightweight ~50KB footprint).
+ * Works directly on Maps, Records, Lists, Sets, Arrays, and Primitives.
  */
 public class Jodash {
 

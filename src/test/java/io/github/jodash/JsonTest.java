@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JsonTest {
 
     record Address(String city, String zip) {}
     record User(String name, int age, Address address, List<String> tags) {}
+    record Empty() {}
 
     enum Status { ACTIVE, PENDING }
 
@@ -44,6 +46,61 @@ class JsonTest {
     }
 
     @Test
+    @DisplayName("toJson serializes NaN and Infinities as null according to RFC 8259")
+    void testNonFiniteNumbersSerializedAsNull() {
+        Map<String, Object> numbers = Jo.dict(
+                "nanDouble", Double.NaN,
+                "posInfDouble", Double.POSITIVE_INFINITY,
+                "negInfDouble", Double.NEGATIVE_INFINITY,
+                "nanFloat", Float.NaN,
+                "posInfFloat", Float.POSITIVE_INFINITY,
+                "negInfFloat", Float.NEGATIVE_INFINITY,
+                "validDouble", 3.14,
+                "validFloat", 2.5f
+        );
+
+        String json = Jo.toJson(numbers);
+        assertThat(json).contains("\"nanDouble\":null");
+        assertThat(json).contains("\"posInfDouble\":null");
+        assertThat(json).contains("\"negInfDouble\":null");
+        assertThat(json).contains("\"nanFloat\":null");
+        assertThat(json).contains("\"posInfFloat\":null");
+        assertThat(json).contains("\"negInfFloat\":null");
+        assertThat(json).contains("\"validDouble\":3.14");
+        assertThat(json).contains("\"validFloat\":2.5");
+    }
+
+    @Test
+    @DisplayName("toJson detects circular references and throws IllegalArgumentException")
+    void testCircularReferenceDetection() {
+        Map<String, Object> cycleMap = new HashMap<>();
+        cycleMap.put("name", "loop");
+        cycleMap.put("self", cycleMap);
+
+        assertThatThrownBy(() -> Jo.toJson(cycleMap))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Circular reference detected");
+
+        List<Object> cycleList = new ArrayList<>();
+        cycleList.add("first");
+        cycleList.add(cycleList);
+
+        assertThatThrownBy(() -> Jo.toJson(cycleList))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Circular reference detected");
+    }
+
+    @Test
+    @DisplayName("toJson allows diamond / shared sub-structures that are not circular")
+    void testSharedSubstructureAllowed() {
+        Map<String, Object> shared = Map.of("key", "val");
+        List<Object> listWithDuplicates = List.of(shared, shared);
+
+        String json = Jo.toJson(listWithDuplicates);
+        assertThat(json).isEqualTo("[{\"key\":\"val\"},{\"key\":\"val\"}]");
+    }
+
+    @Test
     @DisplayName("toJson serializes Java Records and Arrays")
     void testRecordAndArraySerialization() {
         User user = new User("Hasan", 30, new Address("Istanbul", "34000"), List.of("java", "go"));
@@ -58,7 +115,9 @@ class JsonTest {
         String[] arr = new String[]{"a", "b"};
         assertThat(Jo.toJson(arr)).isEqualTo("[\"a\",\"b\"]");
         assertThat(Jo.toJson(new int[]{})).isEqualTo("[]");
+        assertThat(Jo.toJson(new Empty())).isEqualTo("{}");
         assertThat(Jo.toJson(Map.of())).isEqualTo("{}");
+        assertThat(Jo.toJson(List.of())).isEqualTo("[]");
     }
 
     @Test

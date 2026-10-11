@@ -17,7 +17,7 @@ In statically-typed Java, dealing with **loosely-typed, dynamic data** (e.g., we
 
 - ❌ **Deep Path Access:** Extracting `payload.get("user").get("address").get("city")` turns into a 10-line minefield of null checks, casts, and potential `ClassCastException`s.
 - ❌ **No Object/Dict Literals:** `Map.of()` is immutable, capped at 10 entries, and awkward for nested graphs.
-- ❌ **Heavy Runtime Dependencies:** Pulling in Jackson or Guava just to merge two JSON configs or stringify a map adds megabytes to AWS Lambda cold starts.
+- ❌ **Heavy Runtime Dependencies:** Pulling in Jackson or Guava just to merge two JSON configs or stringify a map adds megabytes of dependencies to your JAR for basic tasks.
 - ❌ **Fragile Type Conversions:** Raw casts like `(Integer) map.get("id")` crash when the underlying deserializer produced a `Long` or `String`.
 
 **Jodash gives you dynamic JavaScript/Lodash ergonomics with 100% zero external dependencies:**
@@ -53,7 +53,7 @@ String slug = kebabCase("Hello World From Java");
 | Use Case | Why Jodash is a Perfect Fit |
 | :--- | :--- |
 | 🌐 **Loose JSON APIs & Webhooks** | Navigate dynamic JSON responses without creating throwaway DTOs or dodging NPEs. |
-| ⚡ **Serverless & GraalVM Native Image** | Zero runtime dependencies. Instant cold starts with tiny JAR footprints (no Jackson or Guava). |
+| ⚡ **Serverless & GraalVM Native Image** | Zero runtime dependencies (~50KB JAR footprint). Avoids Jackson/Guava dependency weight and reflection/classpath scanning overhead. |
 | ⚙️ **Multi-Tenant Config Management** | Deep recursive merge (`merge`) and default resolution (`defaults`) for layered configurations. |
 | 🤖 **AI Agents & LLM Code Generation** | Clean, 1-line idioms eliminate verbose Stream collectors and hallucinated casts. |
 
@@ -61,7 +61,7 @@ String slug = kebabCase("Hello World From Java");
 
 ## ⚔️ Standard Java vs Jodash (Head-to-Head)
 
-> 💡 **Runnable Comparison Samples:** Check the [`examples/`](file:///Users/hasanacar/Documents/Projects/open-source-projects/jodash/examples) directory for 8 dedicated side-by-side runnable sample folders (`sample_1_object_path`, `sample_2_batching_chunking`, etc.) showing complete runnable Java comparisons.
+> 💡 **Runnable Comparison Samples:** Check the [`examples/`](file:///Users/hasanacar/Documents/Projects/open-source-projects/jodash/examples) directory for 9 dedicated side-by-side runnable sample folders (`sample_1_object_path` through `sample_9_zero_dependency_json`) showing complete runnable Java comparisons.
 
 | Task | Standard Java (Vanilla / Streams) | With Jodash (`jo`) | Lines Saved |
 | :--- | :--- | :--- | :--- |
@@ -272,10 +272,10 @@ isEmpty("hello");       // false
 
 ### 3. 📦 Zero-Dependency JSON Serialization
 
-In lightweight microservices, AWS Lambda, CLI tools, or GraalVM Native Images, pulling in `jackson-databind` (~2MB of dependencies) just to stringify a dynamic map or response payload is unnecessary overhead. Jodash provides built-in JSON serialization with 100% zero external dependencies:
+In lightweight microservices, CLI tools, serverless functions, or GraalVM Native Images, pulling in `jackson-databind` (~2MB of dependencies) just to serialize dynamic maps, configurations, or Java Records is often unnecessary. Jodash provides a lightweight, zero-dependency JSON serializer:
 
 ```java
-// Compact JSON string (works on Maps, Records, Lists, Sets, Arrays, Enums, Primitives)
+// Compact RFC 8259 JSON string (supports Maps, Records, Lists, Sets, Arrays, Enums, Primitives)
 String json = toJson(userMap);
 // {"name":"Hasan","roles":["admin","dev"],"active":true}
 
@@ -288,6 +288,11 @@ String apiResponse = obj()
     .set("data.user.id", 101)
     .toJson();
 ```
+
+> **Design & Safety Notes:**
+> - **RFC 8259 Compliance:** Non-finite numbers (`NaN`, `Infinity`, `-Infinity`) are safely serialized as `null`.
+> - **Cycle Protection:** Detects circular references and throws `IllegalArgumentException` instead of overflowing the stack.
+> - **Scope:** Specially optimized for dynamic `Map` structures and Java `Record`s. Arbitrary custom objects fall back to their string representation. For advanced polymorphic bean binding or custom annotations, continue using Jackson.
 
 ---
 
