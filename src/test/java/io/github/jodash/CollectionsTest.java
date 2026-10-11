@@ -131,4 +131,32 @@ class CollectionsTest {
         assertThat(Jo.sampleSize(list, 3)).hasSize(3);
         assertThat(Jo.shuffle(list)).containsExactlyInAnyOrder(10, 20, 30, 40, 50);
     }
+
+    @Test
+    @DisplayName("keyBy overwrites duplicates with later values and handles nulls")
+    void testKeyByDuplicatesAndNulls() {
+        List<Product> products = Jo.list(
+                new Product("Phone", "tech", 100),
+                new Product("Phone", "tech", 200) // duplicate name
+        );
+
+        Map<String, Product> keyed = Jo.keyBy(products, Product::name);
+        assertThat(keyed.get("Phone").price()).isEqualTo(200); // last wins
+
+        assertThat(Jo.keyBy(products, null)).isEmpty();
+        assertThat(Jo.groupBy(products, null)).isEmpty();
+
+        // flatten with null inner list
+        List<List<String>> withNulls = new ArrayList<>();
+        withNulls.add(List.of("a"));
+        withNulls.add(null);
+        withNulls.add(List.of("b"));
+        assertThat(Jo.flatten(withNulls)).containsExactly("a", "b");
+
+        // sampleSize does not mutate input list
+        List<Integer> original = Jo.list(1, 2, 3, 4, 5);
+        List<Integer> sample = Jo.sampleSize(original, 2);
+        assertThat(original).containsExactly(1, 2, 3, 4, 5);
+        assertThat(sample).hasSize(2);
+    }
 }

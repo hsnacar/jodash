@@ -166,6 +166,8 @@ public final class ObjectPath {
             int index = Integer.parseInt(lastToken);
             ensureListCapacity(list, index);
             list.set(index, value);
+        } else {
+            throw new IllegalStateException("Cannot set property on non-container object of type: " + current.getClass());
         }
         return root;
     }

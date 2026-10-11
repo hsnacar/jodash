@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,5 +60,38 @@ class CoerceTest {
 
         Map<String, Object> fallback = Jo.asMap("not-a-map");
         assertThat(fallback).isEmpty();
+
+        assertThat(Jo.asMap(null)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Coerce fallback branches for invalid numbers, booleans, strings")
+    void testCoerceFallbacks() {
+        // asLong
+        assertThat(Jo.asLong(null, -1L)).isEqualTo(-1L);
+        assertThat(Jo.asLong(true, 0L)).isEqualTo(1L);
+        assertThat(Jo.asLong(false, 1L)).isEqualTo(0L);
+        assertThat(Jo.asLong("123.45", 0L)).isEqualTo(123L);
+        assertThat(Jo.asLong("invalid", -99L)).isEqualTo(-99L);
+
+        // asDouble
+        assertThat(Jo.asDouble(null, -1.0)).isEqualTo(-1.0);
+        assertThat(Jo.asDouble("invalid", -99.9)).isEqualTo(-99.9);
+
+        // asBoolean
+        assertThat(Jo.asBoolean("no", true)).isFalse();
+        assertThat(Jo.asBoolean("n", true)).isFalse();
+        assertThat(Jo.asBoolean("y", false)).isTrue();
+        assertThat(Jo.asBoolean("unknown_word", true)).isTrue();
+        assertThat(Jo.asBoolean("unknown_word", false)).isFalse();
+
+        // asString
+        assertThat(Jo.asString(null, "default_str")).isEqualTo("default_str");
+        assertThat(Jo.asString("value", "default_str")).isEqualTo("value");
+
+        // asList
+        assertThat(Jo.asList(null)).isEmpty();
+        assertThat(Jo.asList(List.of("already_list"))).containsExactly("already_list");
+        assertThat(Jo.asList(Set.of("from_set"))).containsExactly("from_set");
     }
 }

@@ -6,6 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Java: 17+](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://openjdk.org/)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-brightgreen.svg)]()
+[![Coverage: 95%](https://img.shields.io/badge/Coverage-95%25-brightgreen.svg)]()
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)]()
 
 ---

@@ -75,5 +75,26 @@ class FunctionsTest {
         assertThatThrownBy(() -> Jo.retry(2, Duration.ofMillis(5), () -> {
             throw new IllegalStateException("Always fails");
         })).isInstanceOf(IllegalStateException.class);
+
+        // Immediate retry with zero delay
+        AtomicInteger immediateCalls = new AtomicInteger(0);
+        String immediateResult = Jo.retry(1, Duration.ZERO, () -> {
+            immediateCalls.incrementAndGet();
+            return "immediate";
+        });
+        assertThat(immediateResult).isEqualTo("immediate");
+        assertThat(immediateCalls.get()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("once supplier evaluates only once and returns cached value")
+    void testOnceSupplier() {
+        AtomicInteger calls = new AtomicInteger(0);
+        Supplier<Integer> onceSupplier = Jo.once(() -> calls.incrementAndGet());
+
+        assertThat(onceSupplier.get()).isEqualTo(1);
+        assertThat(onceSupplier.get()).isEqualTo(1);
+        assertThat(onceSupplier.get()).isEqualTo(1);
+        assertThat(calls.get()).isEqualTo(1);
     }
 }

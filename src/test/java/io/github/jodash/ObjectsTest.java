@@ -104,4 +104,82 @@ class ObjectsTest {
         assertThat(Jo.isEmpty("a")).isFalse();
         assertThat(Jo.isEmpty(List.of(1))).isFalse();
     }
+
+    @Test
+    @DisplayName("cloneDeep handles Sets, Arrays, and primitives")
+    void testCloneDeepAdvanced() {
+        assertThat((Object) Jo.cloneDeep(null)).isNull();
+        assertThat(Jo.cloneDeep("immutable")).isEqualTo("immutable");
+        assertThat(Jo.cloneDeep(123)).isEqualTo(123);
+
+        Set<String> set = new LinkedHashSet<>(List.of("x", "y"));
+        Set<String> clonedSet = Jo.cloneDeep(set);
+        assertThat(clonedSet).containsExactly("x", "y");
+        clonedSet.add("z");
+        assertThat(set).hasSize(2);
+        assertThat(clonedSet).hasSize(3);
+
+        String[] arr = new String[]{"one", "two"};
+        String[] clonedArr = Jo.cloneDeep(arr);
+        assertThat(clonedArr).containsExactly("one", "two");
+        clonedArr[0] = "mutated";
+        assertThat(arr[0]).isEqualTo("one");
+    }
+
+    @Test
+    @DisplayName("merge and defaults with null target, null sources, multiple sources")
+    void testMergeAndDefaultsNullsAndMultiples() {
+        // merge with null target
+        Map<String, Object> target = Jo.merge(null, Map.of("a", 1));
+        assertThat(target).containsEntry("a", 1);
+
+        // merge with null source
+        assertThat(Jo.merge(target, (Map<String, Object>[]) null)).isSameAs(target);
+        assertThat(Jo.merge(target, (Map<String, Object>) null)).isSameAs(target);
+
+        // defaults with null target
+        Map<String, Object> defResult = Jo.defaults(null, Map.of("x", 10));
+        assertThat(defResult).containsEntry("x", 10);
+
+        // defaults with null source
+        assertThat(Jo.defaults(defResult, (Map<String, Object>[]) null)).isSameAs(defResult);
+        assertThat(Jo.defaults(defResult, (Map<String, Object>) null)).isSameAs(defResult);
+
+        // nested defaults
+        Map<String, Object> nestedTarget = Jo.dict("user", Jo.dict("name", "Hasan", "role", null));
+        Map<String, Object> nestedDefaults = Jo.dict("user", Jo.dict("name", "DefaultName", "role", "user"));
+        Jo.defaults(nestedTarget, nestedDefaults);
+        assertThat(Jo.<String>get(nestedTarget, "user.name")).isEqualTo("Hasan");
+        assertThat(Jo.<String>get(nestedTarget, "user.role")).isEqualTo("user");
+    }
+
+    @Test
+    @DisplayName("isEqual handles arrays, maps, and lists branch conditions")
+    void testIsEqualBranches() {
+        // Arrays: different length, different items
+        assertThat(Jo.isEqual(new int[]{1, 2}, new int[]{1, 2, 3})).isFalse();
+        assertThat(Jo.isEqual(new int[]{1, 2}, new int[]{1, 3})).isFalse();
+        assertThat(Jo.isEqual(new int[]{1, 2}, new int[]{1, 2})).isTrue();
+
+        // Maps: different sizes, different keys
+        assertThat(Jo.isEqual(Map.of("a", 1), Map.of("a", 1, "b", 2))).isFalse();
+        assertThat(Jo.isEqual(Map.of("a", 1), Map.of("b", 1))).isFalse();
+        assertThat(Jo.isEqual(Map.of("a", 1), Map.of("a", 2))).isFalse();
+
+        // Lists: different sizes, different elements
+        assertThat(Jo.isEqual(List.of(1, 2), List.of(1))).isFalse();
+        assertThat(Jo.isEqual(List.of(1, 2), List.of(1, 3))).isFalse();
+
+        // Null comparisons
+        assertThat(Jo.isEqual(null, null)).isTrue();
+        assertThat(Jo.isEqual("a", null)).isFalse();
+        assertThat(Jo.isEqual(null, "b")).isFalse();
+    }
+
+    @Test
+    @DisplayName("dict handles empty and null varargs")
+    void testDictBoundaries() {
+        assertThat(Jo.dict((Object[]) null)).isEmpty();
+        assertThat(Jo.dict()).isEmpty();
+    }
 }

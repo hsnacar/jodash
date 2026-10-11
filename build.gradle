@@ -41,6 +41,19 @@ jacocoTestReport {
     }
 }
 
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.85
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+
 publishing {
     publications {
         mavenJava(MavenPublication) {

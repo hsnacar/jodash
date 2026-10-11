@@ -55,4 +55,26 @@ class StringsTest {
         assertThat(escaped).contains("&amp;").contains("&lt;").contains("&gt;").contains("&#39;").contains("&quot;");
         assertThat(Jo.unescape(escaped)).isEqualTo(raw);
     }
+
+    @Test
+    @DisplayName("repeat, truncate boundary, and padding branches")
+    void testStringsAdvancedBranches() {
+        // repeat
+        assertThat(Jo.repeat("abc", 3)).isEqualTo("abcabcabc");
+        assertThat(Jo.repeat("abc", 0)).isEmpty();
+        assertThat(Jo.repeat("abc", -1)).isEmpty();
+
+        // truncate with length <= omission
+        assertThat(Jo.truncate("hello", 2, "...")).isEqualTo("..");
+        assertThat(Jo.truncate("hello", 10, null)).isEqualTo("hello");
+
+        // pad when already long enough
+        assertThat(Jo.pad("longstring", 5, "-")).isEqualTo("longstring");
+        assertThat(Jo.padStart("longstring", 5, "-")).isEqualTo("longstring");
+        assertThat(Jo.padEnd("longstring", 5, "-")).isEqualTo("longstring");
+
+        // pad with empty chars defaults to space
+        assertThat(Jo.padStart("a", 3, "")).isEqualTo("  a");
+        assertThat(Jo.padEnd("a", 3, "")).isEqualTo("a  ");
+    }
 }

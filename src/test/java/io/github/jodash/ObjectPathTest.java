@@ -109,4 +109,61 @@ class ObjectPathTest {
         assertThat(ObjectPath.has(map, "a.b")).isFalse();
         assertThat(ObjectPath.has(map, "a.c")).isTrue();
     }
+
+    static class UserWithFlag {
+        private final boolean active;
+        public UserWithFlag(boolean active) { this.active = active; }
+        public boolean isActive() { return active; }
+    }
+
+    static class UserWithPrivateField {
+        private final String secret = "hidden_val";
+    }
+
+    @Test
+    @DisplayName("ObjectPath edge branches: empty paths, null values, list expansion, list unset, reflection variations")
+    void testObjectPathEdgeBranches() {
+        // Empty / blank paths
+        assertThat(ObjectPath.parsePath(null)).isEmpty();
+        assertThat(ObjectPath.parsePath("   ")).isEmpty();
+        assertThat(ObjectPath.<String>get("any", "", "def")).isEqualTo("def");
+        assertThat(ObjectPath.has("any", "")).isFalse();
+        assertThat(ObjectPath.unset("any", "")).isFalse();
+
+        Map<String, Object> root = new LinkedHashMap<>();
+        assertThat(ObjectPath.set(root, "", "val")).isSameAs(root);
+
+        // has() on map with explicit null value
+        root.put("nullKey", null);
+        assertThat(ObjectPath.has(root, "nullKey")).isTrue();
+        assertThat(ObjectPath.has(root, "nonExistentKey")).isFalse();
+
+        // set() navigating through non-container throws IllegalStateException
+        root.put("scalar", "primitive");
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> ObjectPath.set(root, "scalar.child", 123))
+                .isInstanceOf(IllegalStateException.class);
+
+        // set() expanding list capacity
+        Map<String, Object> listContainer = new LinkedHashMap<>();
+        ObjectPath.set(listContainer, "arr[3]", "third");
+        assertThat(listContainer.get("arr")).asList().hasSize(4);
+        assertThat(ObjectPath.<String>get(listContainer, "arr[3]")).isEqualTo("third");
+        assertThat(ObjectPath.<String>get(listContainer, "arr[0]")).isNull();
+
+        // unset() on list elements
+        Map<String, Object> usersMap = Jo.dict("items", Jo.list("x", "y", "z"));
+        assertThat(ObjectPath.unset(usersMap, "items[1]")).isTrue();
+        assertThat(usersMap.get("items")).asList().containsExactly("x", "z");
+        assertThat(ObjectPath.unset(usersMap, "items[99]")).isFalse();
+        assertThat(ObjectPath.unset(usersMap, "missing.node.leaf")).isFalse();
+
+        // POJO boolean getter (is...)
+        assertThat(ObjectPath.<Boolean>get(new UserWithFlag(true), "active")).isTrue();
+        assertThat(ObjectPath.has(new UserWithFlag(true), "active")).isTrue();
+
+        // POJO private field without getter
+        assertThat(ObjectPath.<String>get(new UserWithPrivateField(), "secret")).isEqualTo("hidden_val");
+        assertThat(ObjectPath.has(new UserWithPrivateField(), "secret")).isTrue();
+        assertThat(ObjectPath.has(new UserWithPrivateField(), "nonExistentField")).isFalse();
+    }
 }
