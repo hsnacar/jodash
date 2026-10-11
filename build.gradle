@@ -2,9 +2,10 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'jacoco'
+    id 'signing'
 }
 
-group = 'io.github.jodash'
+group = 'io.github.hsnacar'
 version = '0.1.0'
 
 java {
@@ -82,4 +83,10 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    required { gradle.taskGraph.hasTask('publish') || gradle.taskGraph.hasTask('publishToMavenLocal') }
+    useGpgCmd()
+    sign publishing.publications.mavenJava
 }

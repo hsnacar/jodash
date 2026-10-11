@@ -209,12 +209,12 @@ dependencies {
 ### Option 2: Maven Central (Direct)
 
 ```groovy
-implementation 'io.github.jodash:jodash:0.1.0'
+implementation 'io.github.hsnacar:jodash:0.1.0'
 ```
 
 ```xml
 <dependency>
-    <groupId>io.github.jodash</groupId>
+    <groupId>io.github.hsnacar</groupId>
     <artifactId>jodash</artifactId>
     <version>0.1.0</version>
 </dependency>

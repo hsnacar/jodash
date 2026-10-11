@@ -1,4 +1,4 @@
-# Jodash (io.github.jodash:jodash)
+# Jodash (io.github.hsnacar:jodash)
 
 > Pragmatic, zero-dependency Lodash-inspired utility library for modern Java (Java 17+).
 
