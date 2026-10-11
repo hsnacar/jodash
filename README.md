@@ -48,7 +48,7 @@ String slug = kebabCase("Hello World From Java"); // "hello-world-from-java"
 
 ## ⚔️ Standard Java vs Jodash (Head-to-Head)
 
-How much boilerplate do you actually eliminate? Here is the comparison:
+> 💡 **Runnable Comparison Samples:** Check the [`examples/`](file:///Users/hasanacar/Documents/Projects/open-source-projects/jodash/examples) directory for 8 dedicated side-by-side runnable sample folders (`sample_1_object_path`, `sample_2_batching_chunking`, etc.) showing complete runnable Java comparisons.
 
 | Task | Standard Java (Vanilla / Streams) | With Jodash (`jo`) | Lines Saved |
 | :--- | :--- | :--- | :--- |
