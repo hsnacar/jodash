@@ -70,6 +70,42 @@ class JsonTest {
         assertThat(json).contains("\"validFloat\":2.5");
     }
 
+    static class CustomValidNumber extends Number {
+        private final String val;
+        CustomValidNumber(String val) { this.val = val; }
+        @Override public int intValue() { return Integer.parseInt(val); }
+        @Override public long longValue() { return Long.parseLong(val); }
+        @Override public float floatValue() { return Float.parseFloat(val); }
+        @Override public double doubleValue() { return Double.parseDouble(val); }
+        @Override public String toString() { return val; }
+    }
+
+    static class CustomInvalidNumber extends Number {
+        @Override public int intValue() { return 10; }
+        @Override public long longValue() { return 10L; }
+        @Override public float floatValue() { return 10f; }
+        @Override public double doubleValue() { return 10.0; }
+        @Override public String toString() { return "10 units"; }
+    }
+
+    @Test
+    @DisplayName("toJson handles BigInteger, BigDecimal, and validates custom Number subclasses")
+    void testNumberFormatsAndCustomNumbers() {
+        Map<String, Object> map = Jo.dict(
+                "bigDec", new java.math.BigDecimal("12345.6789"),
+                "bigInt", new java.math.BigInteger("9876543210123456789"),
+                "customValid", new CustomValidNumber("420"),
+                "customInvalid", new CustomInvalidNumber()
+        );
+
+        String json = Jo.toJson(map);
+        assertThat(json).contains("\"bigDec\":12345.6789");
+        assertThat(json).contains("\"bigInt\":9876543210123456789");
+        assertThat(json).contains("\"customValid\":420");
+        // Non-standard numeric string representation is safely escaped as string
+        assertThat(json).contains("\"customInvalid\":\"10 units\"");
+    }
+
     @Test
     @DisplayName("toJson detects circular references and throws IllegalArgumentException")
     void testCircularReferenceDetection() {

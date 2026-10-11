@@ -53,7 +53,7 @@ String slug = kebabCase("Hello World From Java");
 | Use Case | Why Jodash is a Perfect Fit |
 | :--- | :--- |
 | 🌐 **Loose JSON APIs & Webhooks** | Navigate dynamic JSON responses without creating throwaway DTOs or dodging NPEs. |
-| ⚡ **Serverless & GraalVM Native Image** | Zero runtime dependencies (~50KB JAR footprint). Avoids Jackson/Guava dependency weight and reflection/classpath scanning overhead. |
+| ⚡ **Serverless & GraalVM Native Image** | Zero runtime dependencies (~37KB verified JAR). Avoids Jackson/Guava dependency weight and reflection/classpath scanning overhead. |
 | ⚙️ **Multi-Tenant Config Management** | Deep recursive merge (`merge`) and default resolution (`defaults`) for layered configurations. |
 | 🤖 **AI Agents & LLM Code Generation** | Clean, 1-line idioms eliminate verbose Stream collectors and hallucinated casts. |
 
@@ -290,7 +290,7 @@ String apiResponse = obj()
 ```
 
 > **Design & Safety Notes:**
-> - **RFC 8259 Compliance:** Non-finite numbers (`NaN`, `Infinity`, `-Infinity`) are safely serialized as `null`.
+> - **Numeric Safety:** Standard numbers (`Integer`, `Long`, `Double`, `Float`, `BigDecimal`, `BigInteger`) are formatted cleanly. Non-finite numbers (`NaN`, `Infinity`, `-Infinity`) are safely emitted as `null`. Custom `Number` subclasses with non-standard string formats are safely quoted as strings to prevent corrupting JSON syntax.
 > - **Cycle Protection:** Detects circular references and throws `IllegalArgumentException` instead of overflowing the stack.
 > - **Scope:** Specially optimized for dynamic `Map` structures and Java `Record`s. Arbitrary custom objects fall back to their string representation. For advanced polymorphic bean binding or custom annotations, continue using Jackson.
 

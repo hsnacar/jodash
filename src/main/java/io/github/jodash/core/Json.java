@@ -74,18 +74,7 @@ public final class Json {
         }
 
         if (value instanceof Number n) {
-            if (n instanceof Double d) {
-                if (!Double.isFinite(d)) {
-                    sb.append("null");
-                    return;
-                }
-            } else if (n instanceof Float f) {
-                if (!Float.isFinite(f)) {
-                    sb.append("null");
-                    return;
-                }
-            }
-            sb.append(n);
+            appendNumber(sb, n);
             return;
         }
 
@@ -271,6 +260,50 @@ public final class Json {
             }
         }
         sb.append('"');
+    }
+
+    private static final java.util.regex.Pattern JSON_NUMBER_PATTERN =
+            java.util.regex.Pattern.compile("^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$");
+
+    private static void appendNumber(StringBuilder sb, Number n) {
+        if (n instanceof Double d) {
+            if (!Double.isFinite(d)) {
+                sb.append("null");
+                return;
+            }
+            sb.append(d);
+            return;
+        }
+
+        if (n instanceof Float f) {
+            if (!Float.isFinite(f)) {
+                sb.append("null");
+                return;
+            }
+            sb.append(f);
+            return;
+        }
+
+        if (n instanceof java.math.BigDecimal bd) {
+            sb.append(bd.toPlainString());
+            return;
+        }
+
+        if (n instanceof Integer || n instanceof Long || n instanceof Short || n instanceof Byte
+                || n instanceof java.math.BigInteger
+                || n instanceof java.util.concurrent.atomic.AtomicInteger
+                || n instanceof java.util.concurrent.atomic.AtomicLong) {
+            sb.append(n);
+            return;
+        }
+
+        // Custom or non-standard Number implementations
+        String str = n.toString();
+        if (str != null && JSON_NUMBER_PATTERN.matcher(str).matches()) {
+            sb.append(str);
+        } else {
+            escapeString(sb, str != null ? str : "");
+        }
     }
 
     private static void indent(StringBuilder sb, int level) {
