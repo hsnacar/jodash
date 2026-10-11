@@ -8,6 +8,7 @@
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-brightgreen.svg)]()
 [![Coverage: 95%](https://img.shields.io/badge/Coverage-95%25-brightgreen.svg)]()
 [![Build](https://github.com/hsnacar/jodash/actions/workflows/ci.yml/badge.svg)](https://github.com/hsnacar/jodash/actions/workflows/ci.yml)
+[![JitPack](https://jitpack.io/v/hsnacar/jodash.svg)](https://jitpack.io/#hsnacar/jodash)
 
 ---
 
@@ -173,12 +174,44 @@ Jodash comes with specialized documentation designed for AI coding agents (Curso
 
 ## 📦 Installation
 
-### Gradle
+### Option 1: JitPack (Ready to Use)
+
+**Gradle:**
+```groovy
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.hsnacar:jodash:v0.1.0'
+}
+```
+
+**Maven:**
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.github.hsnacar</groupId>
+        <artifactId>jodash</artifactId>
+        <version>v0.1.0</version>
+    </dependency>
+</dependencies>
+```
+
+### Option 2: Maven Central (Direct)
+
 ```groovy
 implementation 'io.github.jodash:jodash:0.1.0'
 ```
 
-### Maven
 ```xml
 <dependency>
     <groupId>io.github.jodash</groupId>
