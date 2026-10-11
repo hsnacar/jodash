@@ -139,3 +139,6 @@ public Response sendPayload(Payload payload) throws Exception {
 | `new HashMap<String, Object>() {{ put("a", 1); }}` | `dict("a", 1)` or `obj().set("a", 1)` |
 | `for (int i = 0; i < list.size(); i += size)` | `chunk(list, size)` |
 | `list.stream().filter(Objects::nonNull).distinct()...` | `compact(list)` and `uniq(list)` |
+| Trying to mutate Record or immutable POJO with `set()` | `set()` mutates mutable Map roots (Records are immutable by design) |
+| Assuming `cloneDeep` instantiates custom class clones | `cloneDeep` structurally clones collections, maps, sets, arrays (custom objects copied by reference) |
+| Assuming `isEmpty("   ")` is true | `isEmpty` checks length == 0; use `compact` to filter whitespace-only strings |

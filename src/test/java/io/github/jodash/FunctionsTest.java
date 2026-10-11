@@ -97,4 +97,22 @@ class FunctionsTest {
         assertThat(onceSupplier.get()).isEqualTo(1);
         assertThat(calls.get()).isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("memoize safely supports null keys and null returned values")
+    void testMemoizeNullKeyAndNullValue() {
+        AtomicInteger calls = new AtomicInteger(0);
+        Function<String, String> echo = Jo.memoize(key -> {
+            calls.incrementAndGet();
+            return key == null ? null : key.toUpperCase();
+        });
+
+        assertThat(echo.apply(null)).isNull();
+        assertThat(echo.apply(null)).isNull();
+        assertThat(calls.get()).isEqualTo(1);
+
+        assertThat(echo.apply("hello")).isEqualTo("HELLO");
+        assertThat(echo.apply("hello")).isEqualTo("HELLO");
+        assertThat(calls.get()).isEqualTo(2);
+    }
 }

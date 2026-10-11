@@ -136,21 +136,23 @@ public final class Jo {
     }
 
     /**
-     * Deep clone of collections, maps, arrays, or primitive objects.
+     * Performs structural deep clone of maps, lists, sets, and arrays.
+     * Primitive wrappers, strings, and custom objects/POJOs are returned by reference.
      */
     public static <T> T cloneDeep(T obj) {
         return JoObjects.cloneDeep(obj);
     }
 
     /**
-     * Deep equality check between any two objects.
+     * Deep equality check between two objects (handles nested collections, maps, arrays, sets).
      */
     public static boolean isEqual(Object a, Object b) {
         return JoObjects.isEqual(a, b);
     }
 
     /**
-     * Checks if a value is empty (null, blank string, empty collection, empty map, empty array, empty optional).
+     * Checks if a value is empty (null, empty string with length == 0, empty collection, empty map, empty array, empty optional).
+     * Whitespace-only strings ("   ") are not considered empty.
      */
     public static boolean isEmpty(Object value) {
         return JoObjects.isEmpty(value);

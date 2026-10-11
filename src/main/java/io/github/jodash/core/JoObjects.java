@@ -175,7 +175,8 @@ public final class JoObjects {
     }
 
     /**
-     * Checks if a value is empty (null, blank string, empty collection, empty map, empty array, or empty optional).
+     * Checks if a value is empty (null, empty string with length == 0, empty collection, empty map, empty array, or empty optional).
+     * Note: Whitespace-only strings ("   ") are not considered empty (consistent with Lodash).
      */
     public static boolean isEmpty(Object value) {
         if (value == null) return true;
@@ -189,6 +190,7 @@ public final class JoObjects {
 
     /**
      * Performs a deep clone of maps, lists, sets, and arrays.
+     * Primitive wrappers, strings, and custom objects/POJOs are returned by reference.
      */
     @SuppressWarnings("unchecked")
     public static <T> T cloneDeep(T obj) {
@@ -261,6 +263,21 @@ public final class JoObjects {
             if (listA.size() != listB.size()) return false;
             for (int i = 0; i < listA.size(); i++) {
                 if (!isEqual(listA.get(i), listB.get(i))) return false;
+            }
+            return true;
+        }
+
+        if (a instanceof Set<?> setA && b instanceof Set<?> setB) {
+            if (setA.size() != setB.size()) return false;
+            for (Object itemA : setA) {
+                boolean matchFound = false;
+                for (Object itemB : setB) {
+                    if (isEqual(itemA, itemB)) {
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound) return false;
             }
             return true;
         }

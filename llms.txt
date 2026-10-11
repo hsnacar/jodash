@@ -14,9 +14,9 @@ import static io.github.jodash.Jo.*;
 
 ### 1. Object Navigation & Dynamic Maps
 - `get(root, "a.b[0].c", defaultVal)` : Safe deep read across Map, Record, POJO, List, Array. Never throws NPE or IndexOutOfBounds.
-- `set(map, "a.b.c", value)` : Safe deep set, creates intermediate maps/lists automatically.
-- `has(root, "a.b")` : Checks if path exists.
-- `unset(root, "a.b")` : Removes property at path.
+- `set(mutableMap, "a.b.c", value)` : Safe deep set on mutable Map roots, creates intermediate maps/lists automatically.
+- `has(root, "a.b")` : Checks if path exists (true even if value is null).
+- `unset(mutableMap, "a.b")` : Removes property at path.
 - `dict("key1", val1, "key2", val2)` : Fast mutable LinkedHashMap builder.
 - `obj().set("a.b", 1).toMap()` : Fluent dynamic object builder.
 
@@ -25,9 +25,9 @@ import static io.github.jodash.Jo.*;
 - `omit(map, "password")` : Filter map excluding specified keys.
 - `merge(target, source1, source2)` : Deep recursive merge of maps.
 - `defaults(target, source)` : Fill null/missing fields without overwriting existing.
-- `cloneDeep(obj)` : Deep recursive copy of collections, maps, arrays.
-- `isEqual(a, b)` : Deep structural equality.
-- `isEmpty(obj)` : True for null, empty CharSequence, Collection, Map, Array, Optional.
+- `cloneDeep(obj)` : Deep recursive copy of collections, maps, sets, arrays. Custom class instances copied by reference.
+- `isEqual(a, b)` : Deep structural equality for Maps, Lists, Sets, and Arrays.
+- `isEmpty(obj)` : True for null, empty CharSequence (length == 0), Collection, Map, Array, Optional. Whitespace (" ") is not empty.
 - `invert(map)` : Swaps keys and values.
 
 ### 3. Collection Utilities
@@ -68,8 +68,8 @@ import static io.github.jodash.Jo.*;
 - `asMap(val)` : Returns Map<String, Object> safely.
 
 ### 6. Control Flow
-- `memoize(supplier)` / `memoize(function)` : Thread-safe caching.
-- `once(runnable)` / `onceSupplier(supplier)` : Single-execution guard.
+- `memoize(supplier)` / `memoize(function)` : Thread-safe and null-safe caching (supports null inputs and outputs).
+- `once(runnable)` / `once(supplier)` : Single-execution guard.
 - `retry(attempts, duration, callable)` : Resilient task execution.
 
 ## Common AI Anti-Patterns to Avoid

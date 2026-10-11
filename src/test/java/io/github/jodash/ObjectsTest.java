@@ -170,6 +170,14 @@ class ObjectsTest {
         assertThat(Jo.isEqual(List.of(1, 2), List.of(1))).isFalse();
         assertThat(Jo.isEqual(List.of(1, 2), List.of(1, 3))).isFalse();
 
+        // Sets: structural equality with nested items
+        Set<Object> set1 = Set.of(new int[]{1, 2}, Map.of("k", "v"));
+        Set<Object> set2 = Set.of(new int[]{1, 2}, Map.of("k", "v"));
+        Set<Object> set3 = Set.of(new int[]{1, 3}, Map.of("k", "v"));
+        assertThat(Jo.isEqual(set1, set2)).isTrue();
+        assertThat(Jo.isEqual(set1, set3)).isFalse();
+        assertThat(Jo.isEqual(Set.of(1), Set.of(1, 2))).isFalse();
+
         // Null comparisons
         assertThat(Jo.isEqual(null, null)).isTrue();
         assertThat(Jo.isEqual("a", null)).isFalse();

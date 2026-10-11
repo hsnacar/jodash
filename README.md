@@ -188,7 +188,8 @@ import static io.github.jodash.Jo.*;
 
 ### 1. 🗺️ Object & Safe Path Navigation
 
-Safely navigate and mutate nested structures (`Map`, Java `Record`, `POJO`, `List`, Array) without worrying about `NullPointerException` or `IndexOutOfBoundsException`.
+- **Reading (`get`, `has`):** Safely navigates nested hierarchies across `Map`, Java `Record`, `POJO` (via getters or fields), `List`, and Arrays without `NullPointerException` or `IndexOutOfBoundsException`.
+- **Mutation (`set`, `unset`):** Mutates mutable `Map` roots (and nested `List`s within them), automatically creating intermediate `LinkedHashMap` and `ArrayList` nodes as needed. *(Note: Java Records are immutable by language design; mutation is designed for dynamic Maps and nested Lists).*
 
 ```java
 // Safe property lookup
@@ -199,10 +200,10 @@ String street = get(data, "user.address.street", "Main St."); // with fallback
 String firstRole = get(data, "user.roles[0]");
 String tag = get(data, "items.1.name"); // dot-index also supported
 
-// Path existence
+// Path existence (returns true even if property value is null)
 boolean exists = has(data, "user.profile.avatar");
 
-// Safe deep mutation (creates intermediate maps and lists automatically)
+// Safe deep mutation on mutable Map (creates intermediate maps and lists automatically)
 set(data, "user.profile.theme", "dark");
 set(data, "orders[0].status", "PENDING");
 
@@ -239,12 +240,16 @@ Map<String, Object> merged = merge(targetDefaults, customOverrides);
 // Defaults (fills missing/null values from sources without overwriting existing ones)
 Map<String, Object> resolved = defaults(userConfig, defaultConfig);
 
-// Deep Clone & Deep Equality
+// Deep Clone (recursively clones Maps, Lists, Sets, and Arrays; custom class instances are copied by reference)
 Map<String, Object> copy = cloneDeep(complexObject);
+
+// Deep Structural Equality (deeply compares nested Maps, Lists, Sets, and Arrays)
 boolean areEqual = isEqual(objA, objB);
 
-// Universal Empty Check (checks null, empty string, collection, map, array, optional)
+// Universal Empty Check (checks null, empty string "" [length == 0], empty collection, map, array, optional)
+// Note: Whitespace-only strings ("   ") have length > 0 and are NOT considered empty (matching Lodash).
 isEmpty("");            // true
+isEmpty("   ");         // false
 isEmpty(List.of());     // true
 isEmpty(new int[]{});   // true
 isEmpty("hello");       // false

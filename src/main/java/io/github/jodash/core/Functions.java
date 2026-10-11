@@ -15,12 +15,24 @@ public final class Functions {
 
     private Functions() {}
 
+    private static final Object NULL_KEY = new Object();
+    private static final Object NULL_VAL = new Object();
+
     /**
      * Creates a function that memoizes the result of fn using input as key.
+     * Safely supports null input arguments and null return values.
      */
+    @SuppressWarnings("unchecked")
     public static <T, R> Function<T, R> memoize(Function<T, R> fn) {
-        Map<T, R> cache = new ConcurrentHashMap<>();
-        return key -> cache.computeIfAbsent(key, fn);
+        Map<Object, Object> cache = new ConcurrentHashMap<>();
+        return key -> {
+            Object cacheKey = key == null ? NULL_KEY : key;
+            Object cached = cache.computeIfAbsent(cacheKey, k -> {
+                R res = fn.apply(key);
+                return res == null ? NULL_VAL : res;
+            });
+            return cached == NULL_VAL ? null : (R) cached;
+        };
     }
 
     /**
