@@ -45,6 +45,118 @@ String slug = kebabCase("Hello World From Java"); // "hello-world-from-java"
 
 ---
 
+## ⚔️ Standard Java vs Jodash (Head-to-Head)
+
+How much boilerplate do you actually eliminate? Here is the comparison:
+
+| Task | Standard Java (Vanilla / Streams) | With Jodash (`jo`) | Lines Saved |
+| :--- | :--- | :--- | :--- |
+| **Deep Property Read** | 8-12 lines of null checks & casts | `get(data, "user.address.city")` | ~90% |
+| **Dynamic Map Builder** | `Map.of()` (max 10 pairs, immutable, no nested path) | `dict("a", 1, "b.c", 2)` | ~75% |
+| **List Chunking** | 7 lines (`IntStream.range` + subList) | `chunk(list, 100)` | 85% |
+| **Grouping By Key** | `list.stream().collect(Collectors.groupingBy(...))` | `groupBy(list, User::dept)` | 60% |
+| **Key By (Index)** | `list.stream().collect(Collectors.toMap(..., (a,b)->b))` | `keyBy(list, User::id)` | 70% |
+| **Safe Type Cast** | Risky `(Integer) obj` (ClassCastException) | `asInt(obj, 0)` | 100% safer |
+| **Deep Merge** | ~30 lines recursive helper | `merge(target, source)` | 95% |
+| **String Casing** | Manual regex + StringBuilder loop | `kebabCase(str)`, `camelCase(str)` | ~90% |
+
+<details>
+<summary><b>🔍 View detailed side-by-side code comparisons</b></summary>
+
+### 1. Reading Nested Property (`user.address.city`)
+#### ❌ Standard Java:
+```java
+String city = null;
+if (payload != null && payload.get("user") instanceof Map<?, ?> userMap) {
+    if (userMap.get("address") instanceof Map<?, ?> addrMap) {
+        Object rawCity = addrMap.get("city");
+        if (rawCity instanceof String s) {
+            city = s;
+        }
+    }
+}
+if (city == null) city = "Default City";
+```
+#### ✅ With Jodash:
+```java
+String city = get(payload, "user.address.city", "Default City");
+```
+
+---
+
+### 2. Splitting a List into Batches (`chunk`)
+#### ❌ Standard Java:
+```java
+int size = 50;
+List<List<Order>> chunks = new ArrayList<>();
+for (int i = 0; i < orders.size(); i += size) {
+    chunks.add(new ArrayList<>(orders.subList(i, Math.min(orders.size(), i + size))));
+}
+```
+#### ✅ With Jodash:
+```java
+List<List<Order>> chunks = chunk(orders, 50);
+```
+
+---
+
+### 3. Safe Type Parsing (From Raw JSON / Dynamic Object)
+#### ❌ Standard Java:
+```java
+// Might be String "42", Double 42.0, or null
+int port = 8080;
+Object rawPort = config.get("port");
+if (rawPort instanceof Number n) {
+    port = n.intValue();
+} else if (rawPort instanceof String s) {
+    try { port = Integer.parseInt(s.trim()); } catch (NumberFormatException ignored) {}
+}
+```
+#### ✅ With Jodash:
+```java
+int port = asInt(config.get("port"), 8080);
+```
+
+---
+
+### 4. Grouping & Indexing
+#### ❌ Standard Java:
+```java
+Map<Department, List<Employee>> byDept = employees.stream()
+    .collect(Collectors.groupingBy(Employee::getDepartment));
+
+Map<UUID, Employee> byId = employees.stream()
+    .collect(Collectors.toMap(Employee::getId, Function.identity(), (prev, next) -> next, LinkedHashMap::new));
+```
+#### ✅ With Jodash:
+```java
+Map<Department, List<Employee>> byDept = groupBy(employees, Employee::getDepartment);
+Map<UUID, Employee> byId = keyBy(employees, Employee::getId);
+```
+
+---
+
+### 5. Deep Merging Two Maps / Configs
+#### ❌ Standard Java:
+Requires writing a custom 25-line recursive method traversing keys and checking instances of Map.
+#### ✅ With Jodash:
+```java
+Map<String, Object> finalConfig = merge(defaultConfig, userConfig, envOverrides);
+```
+
+</details>
+
+---
+
+## 🤖 For AI Agents & LLMs
+
+Jodash comes with specialized documentation designed for AI coding agents (Cursor, Copilot, Windsurf, Claude Code, Antigravity):
+
+- **[AGENT_GUIDE.md](file:///Users/hasanacar/Documents/Projects/open-source-projects/jodash/AGENT_GUIDE.md)**: AI-optimized cheatsheet, anti-patterns, and zero-boilerplate recipes.
+- **[llms.txt](file:///Users/hasanacar/Documents/Projects/open-source-projects/jodash/llms.txt)**: Fast machine-readable API manifest conforming to the [llmstxt.org](https://llmstxt.org/) standard.
+
+---
+
 ## 📦 Installation
 
 ### Gradle
