@@ -7,7 +7,7 @@
 [![Java: 17+](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://openjdk.org/)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-brightgreen.svg)]()
 [![Coverage: 95%](https://img.shields.io/badge/Coverage-95%25-brightgreen.svg)]()
-[![Build](https://github.com/hasanacar/jodash/actions/workflows/ci.yml/badge.svg)](https://github.com/hasanacar/jodash/actions/workflows/ci.yml)
+[![Build](https://github.com/hsnacar/jodash/actions/workflows/ci.yml/badge.svg)](https://github.com/hsnacar/jodash/actions/workflows/ci.yml)
 
 ---
 

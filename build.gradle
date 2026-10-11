@@ -61,7 +61,7 @@ publishing {
             pom {
                 name = 'Jodash'
                 description = 'Lodash-inspired pragmatic utility toolkit for modern Java (Java 17+).'
-                url = 'https://github.com/hasanacar/jodash'
+                url = 'https://github.com/hsnacar/jodash'
                 licenses {
                     license {
                         name = 'MIT License'
@@ -70,14 +70,14 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'hasanacar'
+                        id = 'hsnacar'
                         name = 'Hasan Acar'
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/hasanacar/jodash.git'
-                    developerConnection = 'scm:git:ssh://github.com/hasanacar/jodash.git'
-                    url = 'https://github.com/hasanacar/jodash'
+                    connection = 'scm:git:git://github.com/hsnacar/jodash.git'
+                    developerConnection = 'scm:git:ssh://github.com/hsnacar/jodash.git'
+                    url = 'https://github.com/hsnacar/jodash'
                 }
             }
         }
