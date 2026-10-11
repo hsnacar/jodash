@@ -269,10 +269,12 @@ public final class JoObjects {
 
         if (a instanceof Set<?> setA && b instanceof Set<?> setB) {
             if (setA.size() != setB.size()) return false;
+            List<Object> unmatched = new ArrayList<>(setB);
             for (Object itemA : setA) {
                 boolean matchFound = false;
-                for (Object itemB : setB) {
-                    if (isEqual(itemA, itemB)) {
+                for (Iterator<Object> iterator = unmatched.iterator(); iterator.hasNext();) {
+                    if (isEqual(itemA, iterator.next())) {
+                        iterator.remove();
                         matchFound = true;
                         break;
                     }

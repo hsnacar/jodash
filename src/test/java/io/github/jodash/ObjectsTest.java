@@ -178,6 +178,16 @@ class ObjectsTest {
         assertThat(Jo.isEqual(set1, set3)).isFalse();
         assertThat(Jo.isEqual(Set.of(1), Set.of(1, 2))).isFalse();
 
+        Set<Object> duplicateDeepValues = new LinkedHashSet<>();
+        duplicateDeepValues.add(new int[]{1});
+        duplicateDeepValues.add(new int[]{1});
+        duplicateDeepValues.add(new int[]{2});
+        Set<Object> differentDeepMultiplicity = new LinkedHashSet<>();
+        differentDeepMultiplicity.add(new int[]{1});
+        differentDeepMultiplicity.add(new int[]{2});
+        differentDeepMultiplicity.add(new int[]{2});
+        assertThat(Jo.isEqual(duplicateDeepValues, differentDeepMultiplicity)).isFalse();
+
         // Null comparisons
         assertThat(Jo.isEqual(null, null)).isTrue();
         assertThat(Jo.isEqual("a", null)).isFalse();
