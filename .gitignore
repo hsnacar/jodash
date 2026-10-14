@@ -6,3 +6,6 @@ build/
 *.iml
 .vscode/
 .DS_Store
+
+bugs/
+AGENT_MAP.md
