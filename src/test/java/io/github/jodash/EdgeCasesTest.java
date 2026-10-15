@@ -118,4 +118,94 @@ class EdgeCasesTest {
         assertThat(Jo.<String>get(list, "[5]", "fallback")).isEqualTo("fallback");
         assertThat(Jo.<String>get(list, "invalid_property", "fallback")).isEqualTo("fallback");
     }
+
+    @Test
+    @DisplayName("BUG-01: ThreadLocalRandom safely handles concurrent shuffle and sample across threads")
+    void testBug01ConcurrentShuffleAndSample() throws Exception {
+        int threads = 50;
+        java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(threads);
+        List<java.util.concurrent.Future<?>> futures = new ArrayList<>();
+        List<Integer> list = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        for (int i = 0; i < threads; i++) {
+            futures.add(executor.submit(() -> {
+                for (int j = 0; j < 50; j++) {
+                    List<Integer> shuffled = Jo.shuffle(list);
+                    assertThat(shuffled).hasSize(10).containsAll(list);
+                    Integer sample = Jo.sample(list);
+                    assertThat(sample).isNotNull().isIn(list);
+                }
+            }));
+        }
+
+        for (java.util.concurrent.Future<?> f : futures) {
+            f.get(5, java.util.concurrent.TimeUnit.SECONDS);
+        }
+        executor.shutdown();
+    }
+
+    @Test
+    @DisplayName("BUG-02: padStart and padEnd with multi-character padding strings")
+    void testBug02PadStartAndPadEndMultiChar() {
+        assertThat(Jo.padStart("hi", 7, "abc")).isEqualTo("abcabhi");
+        assertThat(Jo.padEnd("hi", 7, "abc")).isEqualTo("hiabcab");
+        assertThat(Jo.padStart("test", 6, "ab")).isEqualTo("abtest");
+        assertThat(Jo.padEnd("test", 6, "ab")).isEqualTo("testab");
+    }
+
+    @Test
+    @DisplayName("BUG-03: unescape supports forward slash entity codes")
+    void testBug03UnescapeForwardSlash() {
+        assertThat(Jo.unescape("a&#47;b")).isEqualTo("a/b");
+        assertThat(Jo.unescape("a&sol;b")).isEqualTo("a/b");
+        assertThat(Jo.unescape("path&#47;to&#47;resource")).isEqualTo("path/to/resource");
+    }
+
+    @Test
+    @DisplayName("BUG-04: Coerce.asBoolean handles float and double numbers without truncation")
+    void testBug04AsBooleanFloatAndDouble() {
+        assertThat(io.github.jodash.core.Coerce.asBoolean(0.1, false)).isTrue();
+        assertThat(io.github.jodash.core.Coerce.asBoolean(0.5, false)).isTrue();
+        assertThat(io.github.jodash.core.Coerce.asBoolean(0.0001f, false)).isTrue();
+        assertThat(io.github.jodash.core.Coerce.asBoolean(-0.9, false)).isTrue();
+        assertThat(io.github.jodash.core.Coerce.asBoolean(0.0, true)).isFalse();
+        assertThat(io.github.jodash.core.Coerce.asBoolean(0f, true)).isFalse();
+        assertThat(io.github.jodash.core.Coerce.asBoolean(Double.NaN, true)).isFalse();
+    }
+
+    @Test
+    @DisplayName("BUG-05: Functions.memoize supplier executes once across concurrent threads")
+    void testBug05MemoizeSupplierConcurrently() throws Exception {
+        java.util.concurrent.atomic.AtomicInteger counter = new java.util.concurrent.atomic.AtomicInteger(0);
+        java.util.function.Supplier<String> memoized = Jo.memoize(() -> {
+            counter.incrementAndGet();
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException ignored) {}
+            return "computed";
+        });
+
+        int threads = 20;
+        java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(threads);
+        List<java.util.concurrent.Future<String>> futures = new ArrayList<>();
+
+        for (int i = 0; i < threads; i++) {
+            futures.add(executor.submit(memoized::get));
+        }
+
+        for (java.util.concurrent.Future<String> f : futures) {
+            assertThat(f.get(5, java.util.concurrent.TimeUnit.SECONDS)).isEqualTo("computed");
+        }
+        executor.shutdown();
+        assertThat(counter.get()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("BUG-06: intersection preserves ordered unique common elements")
+    void testBug06IntersectionLinkedHashSet() {
+        List<Integer> a = List.of(1, 2, 3, 2, 1);
+        List<Integer> b = List.of(2, 3, 4, 3);
+        List<Integer> result = Jo.intersection(a, b);
+        assertThat(result).containsExactly(2, 3);
+    }
 }

@@ -161,11 +161,14 @@ public final class Strings {
         if (strLen >= length) return string;
 
         int needed = length - strLen;
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(needed);
+        int i = 0;
+        int charsLen = chars.length();
         while (sb.length() < needed) {
-            sb.append(chars);
+            sb.append(chars.charAt(i % charsLen));
+            i++;
         }
-        return sb.substring(0, needed) + string;
+        return sb.toString() + string;
     }
 
     /**
@@ -178,12 +181,14 @@ public final class Strings {
         if (strLen >= length) return string;
 
         int needed = length - strLen;
-        StringBuilder sb = new StringBuilder();
-        sb.append(string);
-        while (sb.length() < length) {
-            sb.append(chars);
+        StringBuilder sb = new StringBuilder(needed);
+        int i = 0;
+        int charsLen = chars.length();
+        while (sb.length() < needed) {
+            sb.append(chars.charAt(i % charsLen));
+            i++;
         }
-        return sb.substring(0, length);
+        return string + sb.toString();
     }
 
     /**
@@ -211,10 +216,12 @@ public final class Strings {
      */
     public static String unescape(String string) {
         if (string == null) return "";
-        return string.replace("&amp;", "&")
-                .replace("&lt;", "<")
+        return string.replace("&lt;", "<")
                 .replace("&gt;", ">")
                 .replace("&quot;", "\"")
-                .replace("&#39;", "'");
+                .replace("&#39;", "'")
+                .replace("&#47;", "/")
+                .replace("&sol;", "/")
+                .replace("&amp;", "&");
     }
 }

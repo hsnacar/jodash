@@ -67,7 +67,7 @@ public final class Coerce {
     public static boolean asBoolean(Object value, boolean defaultValue) {
         if (value == null) return defaultValue;
         if (value instanceof Boolean b) return b;
-        if (value instanceof Number n) return n.intValue() != 0;
+        if (value instanceof Number n) return !Double.isNaN(n.doubleValue()) && n.doubleValue() != 0.0;
         String s = value.toString().trim().toLowerCase();
         if ("true".equals(s) || "1".equals(s) || "yes".equals(s) || "y".equals(s)) return true;
         if ("false".equals(s) || "0".equals(s) || "no".equals(s) || "n".equals(s)) return false;

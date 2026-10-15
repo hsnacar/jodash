@@ -41,7 +41,7 @@ public final class Functions {
     public static <T> Supplier<T> memoize(Supplier<T> supplier) {
         return new Supplier<>() {
             private volatile boolean computed = false;
-            private T value;
+            private volatile T value;
 
             @Override
             public T get() {

@@ -1,8 +1,8 @@
 package io.github.jodash.core;
 
 import java.lang.reflect.Array;
-import java.security.SecureRandom;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
@@ -11,8 +11,6 @@ import java.util.function.ToDoubleFunction;
  * Collection utilities inspired by Lodash (chunk, groupBy, keyBy, compact, flatten, uniq, partition, sample, shuffle, etc.).
  */
 public final class JoCollections {
-
-    private static final Random RANDOM = new SecureRandom();
 
     private JoCollections() {}
 
@@ -211,7 +209,7 @@ public final class JoCollections {
      */
     public static <T> T sample(List<T> list) {
         if (list == null || list.isEmpty()) return null;
-        return list.get(RANDOM.nextInt(list.size()));
+        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
     }
 
     /**
@@ -220,7 +218,7 @@ public final class JoCollections {
     public static <T> List<T> sampleSize(List<T> list, int n) {
         if (list == null || list.isEmpty() || n <= 0) return new ArrayList<>();
         List<T> copy = new ArrayList<>(list);
-        java.util.Collections.shuffle(copy, RANDOM);
+        java.util.Collections.shuffle(copy, ThreadLocalRandom.current());
         return copy.subList(0, Math.min(n, copy.size()));
     }
 
@@ -230,7 +228,7 @@ public final class JoCollections {
     public static <T> List<T> shuffle(List<T> list) {
         if (list == null) return new ArrayList<>();
         List<T> copy = new ArrayList<>(list);
-        java.util.Collections.shuffle(copy, RANDOM);
+        java.util.Collections.shuffle(copy, ThreadLocalRandom.current());
         return copy;
     }
 
@@ -255,7 +253,7 @@ public final class JoCollections {
      */
     public static <T> List<T> intersection(Collection<T> a, Collection<T> b) {
         if (a == null || b == null) return new ArrayList<>();
-        Set<T> setB = new HashSet<>(b);
+        Set<T> setB = new LinkedHashSet<>(b);
         Set<T> seen = new LinkedHashSet<>();
         for (T item : a) {
             if (setB.contains(item)) {

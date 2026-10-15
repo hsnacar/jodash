@@ -184,7 +184,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.hsnacar:jodash:v0.1.0'
+    implementation 'com.github.hsnacar:jodash:v0.1.1'
 }
 ```
 
@@ -201,7 +201,7 @@ dependencies {
     <dependency>
         <groupId>com.github.hsnacar</groupId>
         <artifactId>jodash</artifactId>
-        <version>v0.1.0</version>
+        <version>v0.1.1</version>
     </dependency>
 </dependencies>
 ```
@@ -209,14 +209,14 @@ dependencies {
 ### Option 2: Maven Central (Direct)
 
 ```groovy
-implementation 'io.github.hsnacar:jodash:0.1.0'
+implementation 'io.github.hsnacar:jodash:0.1.1'
 ```
 
 ```xml
 <dependency>
     <groupId>io.github.hsnacar</groupId>
     <artifactId>jodash</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
